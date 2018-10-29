@@ -2,7 +2,7 @@
   "name": "risco-mqtt-bridge",
   "version": "1.0.0",
   "description": "Risco Cloud to Mqtt - Bridge - with Node.js",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
