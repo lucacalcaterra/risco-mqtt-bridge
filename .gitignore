@@ -2,5 +2,7 @@ node_modules/
 # ignore local config
 /config/config.js
 logs/*
+# exception to the rule
+!logs/.gitkeep 
 # .vscode/
 test/
