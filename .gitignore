@@ -1,6 +1,6 @@
 node_modules/
 # ignore local config
 /config/config.js
-*.log
+logs/*.log
 # .vscode/
 test/
