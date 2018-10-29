@@ -1,14 +1,15 @@
 /* eslint linebreak-style: ["error", "windows"] */
 const MQTT = require('async-mqtt');
-const express = require('express');
+// const express = require('express'); // TODO
 const RiscoPoller = require('./panelPoller');
 const Config = require('./config/config');
 const riscoLogger = require('./logger');
 
-const app = express();
+// const app = express(); // TODO
 const riscoPoller = new RiscoPoller(Config.Conn.POLLINGINTERVAL);
 
 async function main() {
+  /* TODO
   // express server
   app.get('/risco/armstatus', (req, res) => {
     res.send(riscoPoller.riscoConn.riscoArmStatus);
@@ -16,6 +17,8 @@ async function main() {
   app.listen(3000, () => {
     riscoLogger.log('info', 'Express server started...');
   });
+  */
+
   // init Mqtt Connection
   const mqttClient = await MQTT.connect((`tcp://${Config.Mqtt.url.MQTT_SERVER}:${Config.Mqtt.url.MQTT_PORT}`), Config.Mqtt.options);
   mqttClient.on('error', (err) => {
