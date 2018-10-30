@@ -1,6 +1,6 @@
 {
   "name": "risco-mqtt-bridge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Risco Cloud to Mqtt - Bridge - with Node.js",
   "main": "app.js",
   "scripts": {
