@@ -1,13 +1,28 @@
 {
   "name": "risco-mqtt-bridge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Risco Cloud to Mqtt - Bridge - with Node.js",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Luca Calcaterra",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lucacalcaterra/risco-mqtt-bridge.git"
+  },
+  "keywords": [
+    "risco",
+    "myelas",
+    "alarm",
+    "mqtt",
+    "smarthome"
+  ],
+  "author": "Luca Calcaterra <calcaterra.luca@gmail.com> (https://www.facebook.com/luca.calcaterra)",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucacalcaterra/risco-mqtt-bridge/issues"
+  },
+  "homepage": "https://github.com/lucacalcaterra/risco-mqtt-bridge",
   "dependencies": {
     "async-mqtt": "^2.0.0",
     "axios": "^0.18.0",
