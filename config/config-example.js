@@ -29,7 +29,7 @@ exports.Conn = {
   postRequestOptions: {
     referer: 'MainPage/MainPage',
   },
-  POLLINGINTERVAL: 5000,
+  POLLINGINTERVAL: 10000,
   CYCLEBEFOREUSERALIVE: 30,
   USERISALIVE: '?userIsAlive=true',
 };
@@ -62,10 +62,10 @@ exports.Mqtt = {
 
   },
   channels: {
-    MAINCHAN: 'riscotestLC', // Main Topic
+    MAINCHAN: 'riscopanel', // Main Topic
     ARMSTATUS: 'armstatus', // Arm status subtopic
     DETECTORS: 'dects', // Detectors subtopic
     EVENTHISTORY: 'eventhistory', // Event History subtopic
-    ISONALARM: 'isonalarm', // Topic for publish ongoing alarm
+    ISONALARM: 'isonalarm', // Topic for receiving ongoing alarm
   },
 };
