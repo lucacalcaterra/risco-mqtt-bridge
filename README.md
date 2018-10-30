@@ -118,4 +118,4 @@ Report them to: https://github.com/lucacalcaterra/risco-mqtt-bridge/issues
 
 
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](calcaterra.luca@gmail.com)
+[![Support via PayPal](https://cdn.rawgit.com/twolfson/paypal-github-button/1.0.0/dist/button.svg)](https://www.paypal.me/lucacalcaterra/)
