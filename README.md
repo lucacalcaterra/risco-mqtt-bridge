@@ -1,6 +1,9 @@
 # Risco (or MyElas) Panel <-> MQTT - bridge 
 Bridge Risco-MyElas Alarm panel to and from MQTT Server (to interface a home automation controller)
 
+
+[![NPM](https://nodei.co/npm/risco-mqtt-bridge.png)](https://nodei.co/npm/risco-mqtt-bridge/)
+
 ## Motivation
 This application is useful for interfacing a home automation controller that support MQTT protocol (for example Openhab, Home Assistant, etc... ) with Cloud Risco (or MyElas, depending on your country).
 
