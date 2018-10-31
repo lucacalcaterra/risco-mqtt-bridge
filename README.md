@@ -41,7 +41,7 @@ Inside `exports.Mqtt` section fill `MQTT_SERVER` address (change port also, if d
 If you want, you can change the MQTT topics where the messages are published inside `channels` section (in the lines there are brief descriptive comments
 )
 
-* To get your riscoSiteId, login to riscocloud via ChromeBrowser (first login screen), and before providing your PIN (second login page), display source of the page and find string: `<div class="site-name" ` ... it will look like:
+*To get your riscoSiteId, login to riscocloud via ChromeBrowser (first login screen), and before providing your PIN (second login page), display source of the page and find string: `<div class="site-name" ` ... it will look like:
 
 `<div class="site-name" id="site_12345_div">`
 In that case "12345" is your siteId 
