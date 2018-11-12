@@ -39,6 +39,7 @@ exports.States = {
     ARMED: 'armed',
     PARTARMED: 'partarmed',
     DISARMED: 'disarmed',
+    ONALARM: 'onalarm',
   },
   armCommands: {
     ARM: 'armed',
@@ -67,5 +68,14 @@ exports.Mqtt = {
     DETECTORS: 'dects', // Detectors subtopic
     EVENTHISTORY: 'eventhistory', // Event History subtopic
     ISONALARM: 'isonalarm', // Topic for receiving ongoing alarm
+  },
+  transforms: {
+    // transforms states strings...to use for example in Home Assistant to reflect H.A.'s  alarm control panel states
+    states: {
+      disarmed: 'disarmed', // disarmed
+      partarmed: 'partarmed', // If you use Home Assistant you must set to 'armed_home'
+      armed: 'armed', // If you use  Home Assistant you must set to 'armed_away'
+      onalarm: 'onalarm', // If you use  Home Assistant you must set to 'triggered'
+    },
   },
 };

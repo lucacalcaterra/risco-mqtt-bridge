@@ -212,7 +212,7 @@ module.exports = class RiscoConnection {
     if (partInfo.armedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.ARMED;
     else if (partInfo.disarmedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.DISARMED;
     else if (partInfo.partarmedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.PARTARMED;
-
+    if (this.OngoingAlarm) this.riscoArmStatus = Config.States.armStatus.ONALARM;
     return this.riscoArmStatus;
   }
 

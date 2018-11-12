@@ -50,7 +50,7 @@ async function main() {
     if (riscoPoller.riscoConn.riscoArmStatus !== null) {
       riscoLogger.log('info', `Arming status: ${riscoPoller.riscoConn.riscoArmStatus}`);
       // publish arm status
-      mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ARMSTATUS}`, riscoPoller.riscoConn.riscoArmStatus, Config.Mqtt.msgOptions);
+      mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ARMSTATUS}`, Config.Mqtt.transforms.states[riscoPoller.riscoConn.riscoArmStatus], Config.Mqtt.msgOptions);
 
       // publish isonAlarm (in case of alarm...)
       mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ISONALARM}`, riscoPoller.riscoConn.riscoOngoingAlarm.toString(), Config.Mqtt.msgOptions);
