@@ -103,6 +103,41 @@ You can send the following messages to `riscopanel/dects/{DetectorId}/SET` topic
 * `bypass` for bypass specific detector ({DetectorId})
 * `unbypass` for unbypass specific detector ({DetectorId})
 
+# Home Assistant
+
+To make the bridge work with Home Assistant you must:
+
+ change `config.js` in transforms section as follow:
+
+```javascript
+
+transforms: {
+    // transforms states strings...to use for example in Home Assistant to reflect H.A.'s  alarm control panel states
+    states: {
+      disarmed: 'disarmed', 
+      partarmed: 'armed_home', 
+      armed: 'armed_away', 
+      onalarm: 'onalarm', 
+    },
+ ```   
+  ....  
+
+Add following lines to `configuration.yaml` in HomeAssistant :
+```yaml
+......
+mqtt:
+  broker: 127.0.0.1
+
+alarm_control_panel:
+  - platform: mqtt
+    state_topic: "riscopanel/armstatus"
+    command_topic: "riscopanel/armstatus/SET"
+    payload_disarm: "disarmed" 
+    payload_arm_home: "partially"
+    payload_arm_away: "armed"
+......
+```
+
 ## ISSUES/KNOWN BUGS/SUGGESTIONS
 
 For now , it works only with one partition and does not manage groups
