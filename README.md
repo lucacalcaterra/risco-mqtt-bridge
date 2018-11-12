@@ -105,9 +105,10 @@ You can send the following messages to `riscopanel/dects/{DetectorId}/SET` topic
 
 # Home Assistant
 
-To make the bridge work with Home Assistant you must:
+To make the bridge work with Home Assistant you must enable MQTT and use the MQTT Alarm Control Panel of HA  (https://www.home-assistant.io/components/alarm_control_panel.mqtt/).
 
- change `config.js` in transforms section as follow:
+ ## Configuration
+ Change `config.js` in transforms section as follow:
 
 ```javascript
 
