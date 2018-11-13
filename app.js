@@ -71,22 +71,25 @@ async function main() {
       // All
       mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}`, JSON.stringify(riscoPoller.riscoConn.riscoEventHistory), Config.Mqtt.msgOptions);
       // Today
-      const todayEventsArray = riscoPoller.riscoConn.riscoEventHistory[0].LogRecords;
-      // Today Not Errors Events
-      const todayNotErrEventsArray = todayEventsArray.filter(event => event.Priority !== 'error');
-      // Today Errors
-      const todayErrorEventsArray = todayEventsArray.filter(event => event.Priority === '');
-      mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}/today/errors`, JSON.stringify(todayErrorEventsArray), Config.Mqtt.msgOptions);
-      this.lastEventString = '';
-      // TODO - format Log Events in tabular , for now only last event
-      /*
+      //   ..... sometimes is empty , check
+      if (riscoPoller.riscoConn.riscoEventHistory[0].LogRecords) {
+        const todayEventsArray = riscoPoller.riscoConn.riscoEventHistory[0].LogRecords;
+        // Today Not Errors Events
+        const todayNotErrEventsArray = todayEventsArray.filter(event => event.Priority !== 'error');
+        // Today Errors
+        const todayErrorEventsArray = todayEventsArray.filter(event => event.Priority === '');
+        mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}/today/errors`, JSON.stringify(todayErrorEventsArray), Config.Mqtt.msgOptions);
+        this.lastEventString = '';
+        // TODO - format Log Events in tabular , for now only last event
+        /*
       lastEventObj.forEach((element) => {
         this.lastEventString = `${element.YTimeToShow} - ${element.EventName}`;
       });
       */
-      // Last Event (not error, useful for knows who arm/disarm)
-      this.lastEventString = (`${todayNotErrEventsArray[0].YTimeToShow} ${todayNotErrEventsArray[0].EventName}`).split('&#39;').join('');
-      mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}/lastevent`, String(this.lastEventString), Config.Mqtt.msgOptions);
+        // Last Event (not error, useful for knows who arm/disarm)
+        this.lastEventString = (`${todayNotErrEventsArray[0].YTimeToShow} ${todayNotErrEventsArray[0].EventName}`).split('&#39;').join('');
+        mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}/lastevent`, String(this.lastEventString), Config.Mqtt.msgOptions);
+      }
       riscoLogger.log('info', 'publish messages on MQTT Server');
     } else riscoLogger.log('debug', 'no new status');
   });
