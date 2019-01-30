@@ -147,8 +147,8 @@ REQUIREMENTS: MQTT Server (You can run also mqtt server with docker in case you 
 If you want can build the Docker image with Dockerfile provided in the repo.
 
 #### Example running MQTT Server and Risco-Mqtt-Bridge with docker
-1- Run MQTT container (i.e. Mosquitto container- refer to: https://hub.docker.com/_/eclipse-mosquitto)
-2- Copy config.js from the github project, fill your params and run risco-mqtt-bridge container with :
+- 1- Run MQTT container (i.e. Mosquitto container- refer to: https://hub.docker.com/_/eclipse-mosquitto)
+- 2- Copy config.js from the github project, fill your params and run risco-mqtt-bridge container with :
 `docker run --name risco-mqtt-bridge -v {path where copied}/config.js:/app/config/config.js lucacalcaterra/risco-mqtt-bridge`
 You can also mount the logs dir if you want adding the param `-v {your path}/logs:/app/logs`
 
