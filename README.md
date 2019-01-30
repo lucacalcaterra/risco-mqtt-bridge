@@ -1,3 +1,4 @@
+
 # Risco (or MyElas) Panel <-> MQTT - bridge 
 Bridge Risco-MyElas Alarm panel to and from MQTT Server (to interface a home automation controller)
 
@@ -138,7 +139,52 @@ alarm_control_panel:
     payload_arm_away: "armed"
 ......
 ```
+## Run with Docker
 
+You can run it with Docker, without having to install nodes and all of its dependencies. 
+Cannot explain how Docker works in this README but if you know it a little, i  give you some short examples...
+REQUIREMENTS: MQTT Server (You can run also mqtt server with docker in case you don't have it on your host).
+If you want can build the Docker image with Dockerfile provided in the repo.
+
+#### Example running MQTT Server and Risco-Mqtt-Bridge with docker
+1- Run MQTT container (i.e. Mosquitto container- refer to: https://hub.docker.com/_/eclipse-mosquitto)
+2- Copy config.js from the github project, fill your params and run risco-mqtt-bridge container with :
+`docker run --name risco-mqtt-bridge -v {path where copied}/config.js:/app/config/config.js lucacalcaterra/risco-mqtt-bridge`
+You can also mount the logs dir if you want adding the param `-v {your path}/logs:/app/logs`
+
+BONUS: I created the docker image for ARM also (for running i.e on Raspberry); to use it must append armhf tag when pull image: `lucacalcaterra/risco-mqtt-bridge:armhf`
+
+#### Example running MQTT Server and Risco-Mqtt-Bridge with Docker Compose
+If you know Docker Compose here is an example of a *docker-compose.yml* file:
+
+***docker-compose.yml***:
+
+```yaml
+version: '2.0'
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    #volumes:
+    # - ./mosquitto/config:/mosquitto/config
+    # - ./mosquitto/data:/mosquitto/data - /srv/dockerct/mosquitto/log:/mosquitto/log
+  risco-mqtt-bridge:
+    image: lucacalcaterra/risco-mqtt-bridge # Append 'armhf' if you run it on ARM Platform
+    container_name: risco-mqtt-bridge
+    restart: unless-stopped
+    #ports: - "3000"
+    volumes:
+      - ./config.js:/app/config/config.js
+      - ./logs:/app/logs
+    environment:
+      - NODE_ENV=production
+
+
+```
 ## ISSUES/KNOWN BUGS/SUGGESTIONS
 
 For now , it works only with one partition and does not manage groups
