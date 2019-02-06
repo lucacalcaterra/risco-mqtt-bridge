@@ -1,6 +1,6 @@
 FROM node:8-alpine
 
-ARG TZ
+ARG TZ=Europe/Rome
 #Update
 RUN apk --no-cache update && \
     apk --no-cache upgrade && \
