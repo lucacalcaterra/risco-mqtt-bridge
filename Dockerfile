@@ -1,8 +1,13 @@
 FROM node:8-alpine
 
+ARG TZ
 #Update
 RUN apk --no-cache update && \
     apk --no-cache upgrade && \
+    apk --update add \
+		tzdata \
+	&& cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone \
+	&& apk del tzdata
     
 RUN mkdir -p /app/node_modules && chown -R node:node /app
 
