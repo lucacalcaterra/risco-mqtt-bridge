@@ -33,8 +33,18 @@ module.exports = class RiscoPoller extends EventEmitter {
     await this.riscoConn.getOverview();
     // check new panel status and emit
     await this.riscoConn.getCPState();
-    this.emit('newpanelstatus');
-    riscoLogger.log('debug', 'Init function for getting data from Cloud completed: OK');
+
+    if (
+      this.riscoConn.isLogged &&
+      this.riscoConn.codeVerified &&
+      this.riscoConn.riscoOverview !== null
+    ) {
+      this.emit('newpanelstatus');
+      riscoLogger.log('info', 'Init function for getting data from Cloud completed: OK');
+      return true;
+    }
+    riscoLogger.log('error', 'error on Init sequence');
+    return false;
   }
 
   async poll() {
@@ -62,14 +72,16 @@ module.exports = class RiscoPoller extends EventEmitter {
     }
   }
 
-  stop() {
+  async stop() {
     this.pollerStop = true;
     clearTimeout(this.timer);
+    this.emit('stopped');
     riscoLogger.log('debug', 'polling stopped.');
   }
 
   async start() {
     this.pollerStop = false;
+    this.emit('started');
     riscoLogger.log('debug', 'polling started...');
     await this.poll();
   }
