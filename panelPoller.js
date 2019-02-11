@@ -6,7 +6,6 @@ const riscoLogger = require('./logger');
 const RiscoConnection = require('./serverHandler.js');
 const Config = require('./config/config');
 
-
 module.exports = class RiscoPoller extends EventEmitter {
   constructor(interval) {
     super();
@@ -15,12 +14,14 @@ module.exports = class RiscoPoller extends EventEmitter {
     this.pollerStop = true;
     this.timer = null;
 
-    this.riscoConn = new RiscoConnection({
-      username: Config.Conn.loginData.username,
-      password: Config.Conn.loginData.password,
-      pincode: Config.Conn.loginData.code,
-    },
-    riscoLogger);
+    this.riscoConn = new RiscoConnection(
+      {
+        username: Config.Conn.loginData.username,
+        password: Config.Conn.loginData.password,
+        pincode: Config.Conn.loginData.code
+      },
+      riscoLogger
+    );
   }
 
   async init() {
@@ -43,6 +44,7 @@ module.exports = class RiscoPoller extends EventEmitter {
         this.counter += 1;
         await this.riscoConn.getCPState();
         this.emit('polled');
+        riscoLogger.log('debug', `Polled...counter:  ${this.counter}`);
         // check if is logged... if not init...
         if (!this.riscoConn.isLogged) {
           riscoLogger.log('warn', 'Disconnected from cloud...relogin and init...');
@@ -53,12 +55,12 @@ module.exports = class RiscoPoller extends EventEmitter {
           this.emit('newpanelstatus');
           riscoLogger.log('info', 'Status panel infos arrived');
         }
-        if (!this.pollerStop) { await this.poll(); }
-      },
-      this.interval);
+        if (!this.pollerStop) {
+          await this.poll();
+        }
+      }, this.interval);
     }
   }
-
 
   stop() {
     this.pollerStop = true;

@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/app.js",
+            "program": "${workspaceFolder}/appnew.js",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
         }
