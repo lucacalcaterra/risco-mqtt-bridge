@@ -2,6 +2,7 @@
 # Risco (or MyElas) Panel <-> MQTT - bridge 
 Bridge Risco-MyElas Alarm panel to and from MQTT Server (to interface a home automation controller)
 
+2019-02-12 : UPDATE- With the Beta 2.0 release supports Home Assistant Autodiscovery, so can discovery panel and Detectors without manual edit the config. Try it and let me know. Thanks
 
 [![NPM](https://nodei.co/npm/risco-mqtt-bridge.png)](https://nodei.co/npm/risco-mqtt-bridge/)
 
