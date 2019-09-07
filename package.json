@@ -25,7 +25,7 @@
   "homepage": "https://github.com/lucacalcaterra/risco-mqtt-bridge",
   "dependencies": {
     "async-mqtt": "^2.4.2",
-    "axios": "^0.19.0",
+    "axios": "^0.18.0",
     "config": "^3.2.2",
     "mqtt": "^3.0.0",
     "winston": "^3.2.1"
