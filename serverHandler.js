@@ -215,6 +215,8 @@ module.exports = class RiscoConnection {
   async setArm(cmd) {
     // code set in case of arm/disarm
     const armcode = (cmd === Config.States.armCommands.ARM) ? '' : '------';
+    const postData = `type=0:${cmd}&passcode=${armcode}&bypassZoneId=-1`;
+
     // check if user code is expired...
     await this.isUserCodeExpired();
     // ..in this case login again..
@@ -226,11 +228,7 @@ module.exports = class RiscoConnection {
         headers: {
           Cookie: this.riscoCookies,
         },
-        data: {
-          type: `0:${cmd}`,
-          passcode: armcode,
-          bypassZoneId: -1,
-        },
+        data: postData,
       });
 
       if (resp.data.armFailures === null) {
@@ -268,6 +266,7 @@ module.exports = class RiscoConnection {
     let by;
     if (dectBypass === 'bypass') by = true;
     else if (dectBypass === 'unbypass') by = false;
+    const postData = `id=${dectId}&bypass=${by}`;
 
     try {
       const resp = await axios({
@@ -276,10 +275,7 @@ module.exports = class RiscoConnection {
         headers: {
           Cookie: this.riscoCookies,
         },
-        data: {
-          id: dectId,
-          bypass: by,
-        },
+        data: postData,
       });
 
       if (resp.data.error === 0) { this.riscoLogger.log('info', `set detector ${dectId} to: ${dectBypass.toString()}`); } else {
