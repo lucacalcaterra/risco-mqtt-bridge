@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint linebreak-style: ["error", "windows"] */
 /* eslint no-console: 0 */
 const axios = require('axios');
@@ -30,16 +31,17 @@ module.exports = class RiscoConnection {
 
   async login() {
     try {
+      const postData = `username=${this.riscousername}&password=${this.riscopassword}`;
       const resp = await axios({
         method: 'post',
         url: Config.Conn.RISCOHOST + Config.Conn.ENDPOINT,
-        data: {
-          username: this.riscousername,
-          password: this.riscopassword,
-          strRedirectToEventUID: '',
-          strRedirectToSiteId: '',
-          langId: Config.Conn.loginData.language,
+        headers: {
+          // not needed...
+          // 'Content-Length': postData.length,
+          // 'Content-type': 'application/x-www-form-urlencoded',
         },
+        data: postData,
+
         validateStatus(status) {
           return status >= Config.Conn.ResCODES.RESP302 && status < 400; // default
         },
@@ -59,20 +61,14 @@ module.exports = class RiscoConnection {
 
   async sendSiteAndCode() {
     try {
+      const postData = `SelectedSiteId=${Config.Conn.loginData.SelectedSiteId}&Pin=${this.riscocode}`;
       const resp = await axios({
         method: 'post',
         url: Config.Conn.RISCOHOST + Config.Conn.ENDPOINT + Config.Conn.ResURLs.SITELOGIN,
         headers: {
           Cookie: this.riscoCookies,
-          Host: 'www.riscocloud.com',
         },
-        data: {
-          Pin: this.riscocode,
-          SelectedSiteId: Config.Conn.loginData.SelectedSiteId,
-          strRedirectToEventUID: '',
-          strRedirectToSiteId: '',
-          langId: 'it-it',
-        },
+        data: postData,
         validateStatus(status) {
           return status >= Config.Conn.ResCODES.RESP200 && status < 400; // default
         },
