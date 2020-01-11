@@ -74,11 +74,15 @@ channels: {
 
 ### Arming status
 
-You can receive arming status subscribing to `riscopanel/armstatus` topic
+You can receive arming status subscribing to `riscopanel/armstatus/{PartitionId}` topic.
+
+For backward compatibility topic `riscopanel/armstatus` is still supported which returns arming status for partition 0.
 
 ### Detectors data (triggered, bypassed/unbypassed and others)
 
-Receive detectors data subscribing to `riscopanel/dects` for JSON data of all detectors or `riscopanel/dects/15` for receive only data about detector with id 15 (example)
+Receive detectors data subscribing to `riscopanel/dects/{PartitionId}/{DetectorIndex}`. Please note that `DetectorIndex`
+is an array index within particular partition, it is not the same as `DetectorId` which is a panel's internal designation
+(and which is unique across all partitions).
 
 ### Event History data
 
@@ -92,13 +96,15 @@ Can receive Event History of your security panel subscribing to `riscopanel/even
 Subscribing to `riscopanel/isonalarm` can receive messages if your panel is in alarm state (`true` if is on alarm / `false` not in alarm)
 ### Arm/Disarm  
 
-You can send the following messages to `riscopanel/armstatus/SET` topic:
+You can send the following messages to `riscopanel/armstatus/{PartitionId}/SET` topic:
 
 * `armed` to arm partition
 * `diarmed` to disarm partition
 * `partarmed` to partially arm partition
 
-(commands can be changed to the section `armStatus` in `exports.States`)
+(commands can be changed to the section `armStatus` in `exports.States`).
+
+For backward compatibility topic `riscopanel/armstatus/SET` is still supported which controls partition 0.
 
 ### Bypass/Unbypass detectors
 
@@ -106,6 +112,9 @@ You can send the following messages to `riscopanel/dects/{DetectorId}/SET` topic
 
 * `bypass` for bypass specific detector ({DetectorId})
 * `unbypass` for unbypass specific detector ({DetectorId})
+
+Please note that `{DetectorId}` is a panel's internal designation of detector (specified in the detector's JSON status)
+which is unique across all partitions (it is not the same as `{DetectorIndex}`).
 
 # Home Assistant
 
