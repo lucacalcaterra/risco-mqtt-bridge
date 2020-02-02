@@ -135,27 +135,22 @@ async function main() {
     const regexpart = new RegExp(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ARMSTATUS}/[^/]+/SET`);
     const regexdect = new RegExp(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.DETECTORS}/[^/]+/SET`);
     riscoLogger.log('info', `message from mqtt arrived:${topic}/${message}`);
-    /**
-     * CASES
-     */
-    switch (topic) {
-      // Case of Arm Command
+    if (topic === `${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ARMSTATUS}/SET`) {
       // one partition backward compatibility
-      case (`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.ARMSTATUS}/SET`):
-        armdisarm(0, message);
-        break;
-      case (topic.match(regexpart)[0]):
-        armdisarm(parseInt(topic.split('/')[2]), message);
-        break;
+      armdisarm(0, message);
+    }
+    else if (topic.match(regexpart)) {
+      armdisarm(parseInt(topic.split('/')[2]), message);
+    }
+    else if (topic.match(regexdect)) {
       // Case of detector command enable/disable
-      case (topic.match(regexdect)[0]):
-        if ((message.toString() === 'bypass') || (message.toString() === 'unbypass')) {
-          riscoLogger.log('info', 'enable/disable detector command arrived...sending command to panel');
-          riscoPoller.riscoConn.setDetectorBypass(topic.split('/')[2], message.toString());
-        } else riscoLogger.log('warn', 'command enable/disable detector malformed');
-        break;
-      default:
-        riscoLogger.log('warn', '...command not recognized');
+      if ((message.toString() === 'bypass') || (message.toString() === 'unbypass')) {
+        riscoLogger.log('info', 'enable/disable detector command arrived...sending command to panel');
+        riscoPoller.riscoConn.setDetectorBypass(topic.split('/')[2], message.toString());
+      } else riscoLogger.log('warn', 'command enable/disable detector malformed');
+    }
+    else {
+      riscoLogger.log('warn', '...command not recognized');
     }
   });
 
