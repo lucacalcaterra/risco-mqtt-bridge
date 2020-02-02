@@ -49,7 +49,10 @@ module.exports = class RiscoConnection {
 
       if (resp.status === Config.Conn.ResCODES.RESP302) {
         this.isLogged = true;
-        this.riscoCookies = resp.headers['set-cookie'];
+        this.riscoCookies = '';
+        resp.headers['set-cookie'].forEach((cookie) => {
+          this.riscoCookies += cookie.substring(0, cookie.indexOf(';') + 1) + ' ';
+        });
         this.riscoLogger.log('debug', 'Logged...Response code is 302: OK');
       }
     } catch (e) {
@@ -74,9 +77,12 @@ module.exports = class RiscoConnection {
         maxRedirects: 0,
       });
 
-      if (resp.status === Config.Conn.ResCODES.RESP302) {
+      if (resp.status === Config.Conn.ResCODES.RESP302 || resp.status === Config.Conn.ResCODES.RESP200) {
         this.codeVerified = true;
-        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is 302: OK');
+        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is ' + resp.status + ': OK');
+      }
+      else {
+        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is ' + resp.status + ': FAIL!');
       }
     } catch (e) {
       this.riscoLogger.log('error', `Exception after sending code: ${e}`);
