@@ -34,7 +34,8 @@ spec:
             - containerPort: 8000
           resources: {}
           volumeMounts:
-            - mountPath: /app/config/config.js
+            # config.js must be inside...
+            - mountPath: /app/config/
               name: risco-mqtt-bridge-config
             #- mountPath: /app/logs
             #  name: risco-mqtt-bridge
