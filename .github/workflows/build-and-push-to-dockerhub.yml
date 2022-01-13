@@ -28,7 +28,7 @@ jobs:
 
       - name: Get latest tag
         id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF:10}
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
     
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -80,15 +80,15 @@ jobs:
           with:
             context: ./
             file: ./Dockerfile
-            platforms: linux/amd64,linux/arm64,linux/ppc64le
+            platforms: linux/amd64,linux/arm64,linux/armhf
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:${{ steps.vars.outputs.tag }}
+            tags: ${{ github.repository }}:latest,${{ github.repository }}:${{steps.vars.outputs.tag}}
           
-        - name: Run the image in a container
-          uses: addnab/docker-run-action@v3
-          with:
-            image: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:${{ steps.vars.outputs.tag }}
-            run: |
-              echo "runing the docker image"
-              echo "Testing the nodejs  app endpoints"
-              echo ${{ steps.docker_build.outputs.digest }}
+        #- name: Run the image in a container
+          #uses: addnab/docker-run-action@v3
+          #with:
+            #image: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:${{ steps.vars.outputs.tag }}
+            #run: |
+              #echo "runing the docker image"
+              #echo "Testing the nodejs  app endpoints"
+              #echo ${{ steps.docker_build.outputs.digest }}
