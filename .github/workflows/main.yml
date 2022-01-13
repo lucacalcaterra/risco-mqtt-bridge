@@ -5,9 +5,11 @@ name: Build Docker and publish
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    #branches: [ main ]
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+  #pull_request:
+    #branches: [ main ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
   
@@ -23,8 +25,15 @@ jobs:
         
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+
+      - name: Get latest tag
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF:10}
+    
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.vars.outputs.tag }}      
 
       - name: setup node
         uses: actions/setup-node@master
@@ -73,12 +82,12 @@ jobs:
             file: ./Dockerfile
             platforms: linux/amd64,linux/arm64,linux/ppc64le
             push: true
-            tags: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:latest
+            tags: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:${{ steps.vars.outputs.tag }}
           
         - name: Run the image in a container
           uses: addnab/docker-run-action@v3
           with:
-            image: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:latest
+            image: ${{ secrets.DOCKERHUB_USERNAME }}/risco-mqtt-bridge:${{ steps.vars.outputs.tag }}
             run: |
               echo "runing the docker image"
               echo "Testing the nodejs  app endpoints"
