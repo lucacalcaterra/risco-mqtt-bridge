@@ -6,7 +6,7 @@ metadata:
     kompose.version: 1.26.0 (40646f47)
   labels:
     io.kompose.service: risco-mqtt-bridge
-  name: risco-mqtt-bridge
+  name: risco-mqtt-bridge-config
 spec:
   replicas: 1
   selector:
@@ -35,14 +35,11 @@ spec:
           resources: {}
           volumeMounts:
             - mountPath: /app/config/config.js
-              name: risco-mqtt-bridge
-            - mountPath: /app/logs
-              name: risco-mqtt-bridge
+              name: risco-mqtt-bridge-config
+            #- mountPath: /app/logs
+            #  name: risco-mqtt-bridge
       restartPolicy: Always
       volumes:
-        - name: risco-mqtt-bridge
-          persistentVolumeClaim:
-            claimName: risco-mqtt-bridge
         - name: risco-mqtt-bridge
           persistentVolumeClaim:
             claimName: risco-mqtt-bridge
