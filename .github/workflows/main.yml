@@ -37,10 +37,10 @@ jobs:
           npm install
           npm ci 
       # build and test the apps     
-      - name: build
-        run: |
-          npm run build
-          npm run test
+      #- name: build
+        #run: |
+          #npm run build
+          #npm run test
   push_to_Docker_Hub:
       # The type of runner that the job will run on
       runs-on: ubuntu-latest
