@@ -24,9 +24,6 @@ COPY --chown=node:node . .
 
 USER node
 
-HEALTHCHECK --interval=240s --timeout=3s \
-	CMD curl -f http://localhost:3000/ || exit 1
-
 EXPOSE 3000
 
 CMD [ "node", "app.js" ]
