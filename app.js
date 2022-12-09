@@ -1,23 +1,24 @@
 /* eslint linebreak-style: ["error", "windows"] */
 const MQTT = require('async-mqtt');
-// const express = require('express'); // TODO
+// only for healthcheck
+const express = require('express');
 const RiscoPoller = require('./panelPoller');
 const Config = require('./config/config');
 const riscoLogger = require('./logger');
 
-// const app = express(); // TODO
 const riscoPoller = new RiscoPoller(Config.Conn.POLLINGINTERVAL);
 
 async function main() {
-  /* TODO
-  // express server
-  app.get('/risco/armstatus', (req, res) => {
-    res.send(riscoPoller.riscoConn.riscoArmStatus);
+  // express server only for healthcheck
+  const app = express();
+
+  app.get('/', (req, res) => {
+    res.sendStatus(200);
   });
+
   app.listen(3000, () => {
     riscoLogger.log('info', 'Express server started...');
   });
-  */
 
   // init Mqtt Connection
   const mqttClient = await MQTT.connect((`tcp://${Config.Mqtt.url.MQTT_SERVER}:${Config.Mqtt.url.MQTT_PORT}`), Config.Mqtt.options);
@@ -75,9 +76,9 @@ async function main() {
       if (riscoPoller.riscoConn.riscoEventHistory[0].LogRecords) {
         const todayEventsArray = riscoPoller.riscoConn.riscoEventHistory[0].LogRecords;
         // Today Not Errors Events
-        const todayNotErrEventsArray = todayEventsArray.filter(event => event.Priority !== 'error');
+        const todayNotErrEventsArray = todayEventsArray.filter((event) => event.Priority !== 'error');
         // Today Errors
-        const todayErrorEventsArray = todayEventsArray.filter(event => event.Priority === '');
+        const todayErrorEventsArray = todayEventsArray.filter((event) => event.Priority === '');
         mqttClient.publish(`${Config.Mqtt.channels.MAINCHAN}/${Config.Mqtt.channels.EVENTHISTORY}/today/errors`, JSON.stringify(todayErrorEventsArray), Config.Mqtt.msgOptions);
         this.lastEventString = '';
         // TODO - format Log Events in tabular , for now only last event
