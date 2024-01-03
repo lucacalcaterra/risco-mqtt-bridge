@@ -29,7 +29,6 @@ module.exports = class RiscoPoller extends EventEmitter {
     await this.riscoConn.getCameras();
     await this.riscoConn.getEventHistory();
     await this.riscoConn.getDetectors();
-    await this.riscoConn.getOverview();
     // check new panel status and emit
     await this.riscoConn.getCPState();
     this.emit('newpanelstatus');
@@ -41,6 +40,7 @@ module.exports = class RiscoPoller extends EventEmitter {
       this.timer = setTimeout(async () => {
         riscoLogger.log('debug', 'polling ...');
         this.counter += 1;
+        await this.riscoConn.getDetectors();
         await this.riscoConn.getCPState();
         this.emit('polled');
         // check if is logged... if not init...
