@@ -34,4 +34,5 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
-          tags: ${{ github.repository }}:latest,${{ github.repository }}:${{steps.vars.outputs.tag}}
+          tags: ${{ github.repository }}:latest 
+          #,${{ github.repository }}:${{steps.vars.outputs.tag}}
