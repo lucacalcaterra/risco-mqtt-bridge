@@ -18,7 +18,6 @@ module.exports = class RiscoConnection {
     this.riscoCameras = null;
     this.riscoDetectors = null;
     this.riscoEventHistory = null;
-    this.riscoOverview = null;
     this.riscoCPState = null;
     this.riscoArmStatus = null;
     this.riscoOngoingAlarm = false;
@@ -50,7 +49,10 @@ module.exports = class RiscoConnection {
 
       if (resp.status === Config.Conn.ResCODES.RESP302) {
         this.isLogged = true;
-        this.riscoCookies = resp.headers['set-cookie'];
+        this.riscoCookies = '';
+        resp.headers['set-cookie'].forEach((cookie) => {
+          this.riscoCookies += cookie.substring(0, cookie.indexOf(';') + 1) + ' ';
+        });
         this.riscoLogger.log('debug', 'Logged...Response code is 302: OK');
       }
     } catch (e) {
@@ -75,9 +77,12 @@ module.exports = class RiscoConnection {
         maxRedirects: 0,
       });
 
-      if (resp.status === Config.Conn.ResCODES.RESP302) {
+      if (resp.status === Config.Conn.ResCODES.RESP302 || resp.status === Config.Conn.ResCODES.RESP200) {
         this.codeVerified = true;
-        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is 302: OK');
+        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is ' + resp.status + ': OK');
+      }
+      else {
+        this.riscoLogger.log('debug', '...site and Pin Code sent...Response code is ' + resp.status + ': FAIL!');
       }
     } catch (e) {
       this.riscoLogger.log('error', `Exception after sending code: ${e}`);
@@ -120,6 +125,7 @@ module.exports = class RiscoConnection {
 
       if ((resp.status === Config.Conn.ResCODES.RESP200) && (resp.data.error === 0)) {
         this.riscoDetectors = resp.data.detectors;
+        this.riscoArmStatus = this.getArmStatus(resp.data.detectors);
         this.riscoLogger.log('debug', '...Detectors taken...Response code is 200 and no data error: OK');
       }
     } catch (e) {
@@ -149,29 +155,6 @@ module.exports = class RiscoConnection {
     return this.riscoEventHistory;
   }
 
-  async getOverview() {
-    try {
-      const resp = await axios({
-        method: 'post',
-        url: Config.Conn.RISCOHOST + Config.Conn.ENDPOINT + Config.Conn.ResURLs.GETOV,
-        headers: {
-          Cookie: this.riscoCookies,
-        },
-        data: {},
-      });
-
-      if ((resp.status === Config.Conn.ResCODES.RESP200) && (resp.data.error === 0)) {
-        this.riscoOverview = resp.data.overview;
-        // after login for to get  arming status we must get partinfo here
-        this.riscoArmStatus = this.getArmStatus(resp.data.overview.partInfo);
-        this.riscoLogger.log('debug', '...Overview taken...Response code is 200 and no data error: OK');
-      }
-    } catch (e) {
-      this.riscoLogger.log('error', `Exception getting Overview: ${e}`);
-    }
-    return this.riscoOverview;
-  }
-
   async getCPState() {
     // if (userIsAlive !== '') this.riscoLogger.log('debug', 'userisAlive sent! ...');
     try {
@@ -190,7 +173,6 @@ module.exports = class RiscoConnection {
       }
       if ((resp.status === Config.Conn.ResCODES.RESP200) && (resp.data.error === 0) && (resp.data.overview !== null)) {
         this.riscoCPState = resp.data.overview;
-        this.riscoArmStatus = this.getArmStatus(resp.data.overview.partInfo);
         this.riscoOngoingAlarm = resp.data.OngoingAlarm;
         this.riscoDetectors = resp.data.detectors;
         this.riscoLogger.log('debug', '...Control Panel State taken and overview not empty... OK');
@@ -204,18 +186,29 @@ module.exports = class RiscoConnection {
     return this.riscoCPState;
   }
 
-  getArmStatus(partInfo) {
-    if (partInfo.armedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.ARMED;
-    else if (partInfo.disarmedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.DISARMED;
-    else if (partInfo.partarmedStr[0] > 0) this.riscoArmStatus = Config.States.armStatus.PARTARMED;
-    if (this.OngoingAlarm) this.riscoArmStatus = Config.States.armStatus.ONALARM;
+  iconToArmStatus(icon) {
+    switch (icon.substring(icon.lastIndexOf('/') + 1)) {
+      case 'ico-armed.png':
+        return Config.States.armStatus.ARMED;
+      case 'ico-disarmed.png':
+        return Config.States.armStatus.DISARMED;
+      case 'ico-partial.png':
+        return Config.States.armStatus.PARTARMED;
+    }
+  }
+
+  getArmStatus(detectors) {
+    this.riscoArmStatus = [];
+    detectors.parts.forEach((part) => {
+      this.riscoArmStatus[part.id] = this.iconToArmStatus(part.armIcon);
+    });
     return this.riscoArmStatus;
   }
 
-  async setArm(cmd) {
+  async setArm(part, cmd) {
     // code set in case of arm/disarm
     const armcode = (cmd === Config.States.armCommands.ARM) ? '' : '------';
-    const postData = `type=0:${cmd}&passcode=${armcode}&bypassZoneId=-1`;
+    const postData = `type=${part}:${cmd}&passcode=${armcode}&bypassZoneId=-1`;
 
     // check if user code is expired...
     await this.isUserCodeExpired();
