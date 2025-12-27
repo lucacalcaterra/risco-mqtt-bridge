@@ -8,8 +8,8 @@ exports.Conn = {
     code: '', // your Risco Panel code
     SelectedSiteId: '', // SiteId Code - get it from installer or read README
   },
-  RISCOHOST: 'https://www.riscocloud.com/',
-  ENDPOINT: 'ELAS/WebUI/',
+  RISCOHOST: 'https://webui.riscocloud.com',
+  ENDPOINT: '/',
   ResURLs: {
     LOGIN: '',
     SITELOGIN: 'SiteLogin',
